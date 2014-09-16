@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Arimaa Free</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="new_option">New Game</string>
+    <string name="load_option">Load Game</string>
+    <string name="save_option">Save Game</string>
+    <string name="settings_option">Settings</string>
+    <string name="done_button">Done</string>
+    <string name="back_button">Back</string>
+    <string name="twoview_setting">Two Player View</string>
+    <string name="pieceset_setting">Piece Graphics</string>
+    <string name="backset_setting">Background Graphics</string>
+
+</resources>
