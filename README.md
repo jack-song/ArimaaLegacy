@@ -7,6 +7,8 @@ Currently in development as a learning project; feedback, pointers, and advice g
 
 ####Planned refactors:
   - Exporting utility methods from the massive GameEngine class to a game rules oriented class
+  - Adjusting the scopes of fields and methods
+  - reducing amount of switch-cases and other convoluted code pieces
   - Implementing exceptions for handling errors
   - Defining and using constants properly
   - Exporting fields from the massive GameEngine class to a proper model class
