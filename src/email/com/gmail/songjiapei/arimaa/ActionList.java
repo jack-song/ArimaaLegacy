@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import android.graphics.Point;
 
 public class ActionList {
+
+	private static final String HISTORY_SPLITTER = " ";
 	
 	ArrayList<GameAction> actions;
 	ArrayList<Boolean> moves;
@@ -119,11 +121,41 @@ public class ActionList {
 		for(GameAction action : actions){
 			if(null != action)
 			{
-				history = history.concat(action.toString() + " ");
+				history = history.concat(action.toString() + HISTORY_SPLITTER);
 			}
 		}
 		
 		return history;
+	}
+	
+	public ArrayList<GameAction> getHistoryFromString(String history){
+		
+		ArrayList<GameAction> actions = new ArrayList<GameAction>();
+		
+		String[] actionStrings = history.split(HISTORY_SPLITTER);
+		
+		for(String actionString: actionStrings){
+			GameAction action;
+			
+			switch(actionString.charAt(0)){
+			case DoneAction.HISTORY_FLAG:
+				action =  DoneAction.fromString(actionString);
+				break;
+			case ShiftMove.HISTORY_FLAG:
+				action =  ShiftMove.fromString(actionString);
+				break;
+			case PlaceMove.HISTORY_FLAG:
+				action =  PlaceMove.fromString(actionString);
+				break;
+			default:
+				action =  RemoveAction.fromString(actionString);
+				break;
+			}
+			
+			actions.add(action);
+		}
+		
+		return actions;
 	}
 	
 	public boolean wasPushing(){

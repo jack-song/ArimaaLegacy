@@ -1,11 +1,13 @@
 package email.com.gmail.songjiapei.arimaa;
 
-import email.com.gmail.songjiapei.arimaa.ShiftMove.Direction;
 import android.graphics.Point;
 
 
 public class RemoveAction extends GameAction {
 
+	public static final char HISTORY_FLAG = 'R';
+	private static final char HISTORY_SUBFLAG = 'x';
+	
 	protected Point position;
 	protected Piece piece;
 	
@@ -13,7 +15,6 @@ public class RemoveAction extends GameAction {
 		super();
 		this.position = position;
 		this.piece = piece;
-		// TODO Auto-generated constructor stub
 	}
 	
 	public Point getPosition(){
@@ -26,7 +27,7 @@ public class RemoveAction extends GameAction {
 
 	public String toString(){
 		
-		return "R" + piece.getLetter() + Board.positionToString(position) + "x";
+		return String.valueOf(HISTORY_FLAG) + piece.getLetter() + Board.positionToString(position) + HISTORY_SUBFLAG;
 	}
 	
 	public static RemoveAction fromString(String str){

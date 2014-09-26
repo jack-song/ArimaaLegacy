@@ -5,15 +5,14 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Point;
 import android.preference.PreferenceManager;
 import android.util.AttributeSet;
-import android.view.Display;
 import android.view.View;
-import android.view.WindowManager;
 
 public class BackgroundView extends View {
 	
+	private static final String PREF_BACKSELECTION = "backset_selection";
+
 	//bitmap of background
 	private Bitmap back_map;
 	
@@ -41,17 +40,12 @@ public class BackgroundView extends View {
 	
 	private void initialize(Context context){
 		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
-		backset = Integer.parseInt(pref.getString("backset_selection", "1"));
+		backset = Integer.parseInt(pref.getString(PREF_BACKSELECTION, "1"));
 	}
 
-	//get image size
-	@Override
-	protected void onSizeChanged(int xNew, int yNew, int xOld, int yOld){
-		super.onSizeChanged(xNew, yNew, xOld, yOld);
-		
-		//make sure it's a square background
-		width = xNew;
-		height = width;
+	public void setWindowWidth(int windowWidth){
+		width = windowWidth;
+		height = windowWidth;
 	}
 	
 	//set to square view, based on height
@@ -64,26 +58,18 @@ public class BackgroundView extends View {
 	public void onDraw(Canvas canvas)
 	{
 		super.onDraw(canvas);
-		
-		//first update the image selection for background
-		updateGraphicsSelection (backset);
-		
+				
 		//draw the background
 		canvas.drawBitmap(back_map, 0, 0, null);
 
 	}
 	
-	public void updateGraphicsSelection(int new_backset_selection){
+	public void updateGraphicsSelection(SharedPreferences pref){
 		
-		//if no changes were made, do not do anything
-		//special case: if the background bitmap has not been initialized
-		if(new_backset_selection == backset && back_map != null)
-			return;
+		Bitmap pre_board;
+		backset = Integer.parseInt(pref.getString(PREF_BACKSELECTION, "1"));
 		
-		Bitmap pre_board = back_map;
-		backset = new_backset_selection;
-		
-		switch(new_backset_selection){
+		switch(backset){
 		case 1:
 			pre_board = BitmapFactory.decodeResource(getResources(), R.drawable.traditional);
 			break;

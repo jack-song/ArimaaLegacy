@@ -4,6 +4,10 @@ import android.graphics.Point;
 
 public class ShiftMove extends MoveAction {
 
+	public static final char HISTORY_FLAG = 'S';
+	private static final char HISTORY_PUSHFLAG = 'P';
+	private static final char HISTORY_NOTPUSHFLAG = 'p';
+	
 	public enum Direction{
 		NORTH, EAST, WEST, SOUTH
 	}
@@ -17,7 +21,7 @@ public class ShiftMove extends MoveAction {
 	}
 	
 	public String toString(){
-		return "S" + piece.getLetter() + Board.positionToString(start) + getLetterFromDirection(dir) + (push ? "P": "p");
+		return String.valueOf(HISTORY_FLAG) + piece.getLetter() + Board.positionToString(start) + getLetterFromDirection(dir) + (push ? HISTORY_PUSHFLAG: HISTORY_NOTPUSHFLAG);
 	}
 	
 	public static ShiftMove fromString(String str){

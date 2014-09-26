@@ -2,9 +2,7 @@ package email.com.gmail.songjiapei.arimaa;
 
 //never accessed by Board or up, defines and tracks basic properties of each piece
 public class Piece {
-	
-	private static final String TAG = "Piece";
-	
+		
 	public enum PieceType {
 		RABBIT, CAT, DOG, HORSE, CAMEL, ELEPHANT
 	}

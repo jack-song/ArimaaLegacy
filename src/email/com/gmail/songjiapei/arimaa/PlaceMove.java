@@ -4,13 +4,14 @@ import android.graphics.Point;
 
 public class PlaceMove extends MoveAction {
 	
+	public static final char HISTORY_FLAG = 'P';
+	
 	public PlaceMove(Point start, Point end, Piece piece) {
-		super(start, end, piece, false);		
-		// TODO Auto-generated constructor stub
+		super(start, end, piece, false);
 	}
 	
 	public String toString(){
-		return "P" + piece.getLetter() + Board.positionToString(start) + Board.positionToString(end);
+		return String.valueOf(HISTORY_FLAG) + piece.getLetter() + Board.positionToString(start) + Board.positionToString(end);
 	}
 	
 	public static PlaceMove fromString(String str){

@@ -1,6 +1,5 @@
 package email.com.gmail.songjiapei.arimaa;
 
-import email.com.gmail.songjiapei.arimaa.GameEngine.GameState;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -14,14 +13,23 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
+import email.com.gmail.songjiapei.arimaa.GameEngine.GameState;
 
 
 public class GameActivity extends Activity {
 
 	static final String TAG = "GameActivity";
+	static final String PREF_TWOVIEW = "twoview";
+	
+	//have the listener here so it can access the method to update graphics
+    SharedPreferences.OnSharedPreferenceChangeListener settingsListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+    	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+    		updateGraphics();
+    	}
+    };
 			
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -30,30 +38,52 @@ public class GameActivity extends Activity {
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 		
+		final GameView gview = (GameView) findViewById(R.id.pieces);
+		final BackgroundView bview = (BackgroundView) findViewById(R.id.board);
+		
 		//load a game's data if possible
-	    GameView gview = (GameView) findViewById(R.id.pieces);
-	    SharedPreferences pref = getPreferences(Context.MODE_PRIVATE);
+	    SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
 	    gview.loadGame(pref);
 	    
+	    //run after view load, but before view display, main purpose is to set window size before it displays
+	    gview.getViewTreeObserver().addOnGlobalLayoutListener( 
+	    	    new OnGlobalLayoutListener(){
+
+	    	        @Override
+	    	        public void onGlobalLayout() {
+
+	    	            int windowWidth = gview.getWidth();
+
+	    	            gview.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+	    	            
+	    	            gview.setWindowWidth(windowWidth);
+	    	            bview.setWindowWidth(windowWidth);
+	    	            
+	    	            updateGraphics();
+	    	        }
+
+	    	});
 	    
-		//update the graphics in the game
-		updateGraphics();
 		updateStatus();
+	}
+	
+	@Override
+	protected void onResume() {
+	    super.onResume();
+	    PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(settingsListener);
+	}
+
+	@Override
+	protected void onPause() {
+	    super.onPause();
+	    PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(settingsListener);
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
-	}
-
-	@Override
-	public void onResume() {
-		super.onResume();
-		updateGraphics();
-		updateStatus();
 	}
 
 	//do not allow any orientations other than portrait
@@ -72,8 +102,8 @@ public class GameActivity extends Activity {
 		case R.id.new_option:
 			GameView gview = (GameView) findViewById(R.id.pieces);
 			gview.resetGame();
-			gview.invalidate();
 			updateStatus();
+			gview.invalidate();
 			break;
 		
 		case R.id.settings_option:
@@ -94,12 +124,12 @@ public class GameActivity extends Activity {
 	    
 	    GameView gview = (GameView) findViewById(R.id.pieces);
 	    
-	    gview.saveGame(getPreferences(Context.MODE_PRIVATE));
+	    gview.saveGame(PreferenceManager.getDefaultSharedPreferences(this));
 	}
 
 	public void updateStatus(){
 		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-		boolean twoview = pref.getBoolean("twoview", true);
+		boolean twoview = pref.getBoolean(PREF_TWOVIEW, true);
 		
 		GameView gview = (GameView) findViewById(R.id.pieces);
 		GameEngine.GameState state = gview.getState();
@@ -107,30 +137,30 @@ public class GameActivity extends Activity {
 		
 		switch(state){
 		case GOLDTURN:
-			setStatus("GOLD - " + (4 - turnSteps));
+			setStatus(getResources().getString(R.string.status_gold_turn_prefix) + (4 - turnSteps));
 			setGoldButtonsMode();
 			break;
 			
 		case SILVERTURN:
-			setStatus("SILVER - " + (4 - turnSteps));
+			setStatus(getResources().getString(R.string.status_silver_turn_prefix) + (4 - turnSteps));
 			setSilverButtonsMode();
 			break;
 			
 		case GOLDPLACE:
-			setStatus("GOLD SETUP");	
+			setStatus(getResources().getString(R.string.status_gold_setup));	
 			setGoldButtonsMode();
 			break;
 			
 		case SILVERPLACE:
-			setStatus("SILVER SETUP");
+			setStatus(getResources().getString(R.string.status_silver_setup));
 			setSilverButtonsMode();
 			break;
 		case GAMEOVERGOLD:
-			setStatus("GOLD WINS");	
+			setStatus(getResources().getString(R.string.status_gold_wins));	
 			setNoButtonsMode();
 			break;
 		default:
-			setStatus("SILVER WINS");
+			setStatus(getResources().getString(R.string.status_silver_wins));
 			setNoButtonsMode();
 		}
 		
@@ -204,7 +234,7 @@ public class GameActivity extends Activity {
 		BackgroundView bview = (BackgroundView) findViewById(R.id.board);
 		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
 		
-    	boolean twoview = pref.getBoolean("twoview", true);
+    	boolean twoview = pref.getBoolean(PREF_TWOVIEW, true);
     	gview.setTwoView(twoview);
 		
 		ViewGroup top = (ViewGroup) findViewById(R.id.topsection);
@@ -218,8 +248,8 @@ public class GameActivity extends Activity {
 		}
 		
 		if(gview.isTiled()){
-			gview.updateGraphicsSelection(Integer.parseInt(pref.getString("pieceset_selection", "2")));
-			bview.updateGraphicsSelection(Integer.parseInt(pref.getString("backset_selection", "1")));
+			gview.updateGraphicsSelection(pref);
+			bview.updateGraphicsSelection(pref);
 		}
 		
 	}

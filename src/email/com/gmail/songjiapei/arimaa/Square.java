@@ -1,12 +1,8 @@
 package email.com.gmail.songjiapei.arimaa;
 
-import android.util.Log;
-
 //never accessed by Game and up, container for pieces, tracks empty squares in the game
 public class Square {
-	
-	private static final String TAG = "Square";
-	
+		
 	Piece piece;
 	
 	boolean empty;

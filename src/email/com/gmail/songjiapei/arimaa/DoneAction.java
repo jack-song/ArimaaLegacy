@@ -1,17 +1,16 @@
 package email.com.gmail.songjiapei.arimaa;
 
-import android.graphics.Point;
-import email.com.gmail.songjiapei.arimaa.ShiftMove.Direction;
 
 public class DoneAction extends GameAction {
 
+	public static final char HISTORY_FLAG = 'D';
+	
 	public DoneAction() {
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public String toString() {
-		return "DD";
+		return String.valueOf(HISTORY_FLAG);
 	}
 	
 	public static DoneAction fromString(String str){

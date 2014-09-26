@@ -1,5 +1,6 @@
 package email.com.gmail.songjiapei.arimaa;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -39,7 +40,6 @@ public class GameEngine {
 	public GameEngine() {
 		board = new Board();
 		actionList = new ActionList();
-		// TODO Auto-generated constructor stub
 	}
 
 	void resetGame() {
@@ -65,7 +65,7 @@ public class GameEngine {
 	}
 	
 	String getBoardState() {
-		return board.getState();
+		return boardState;
 	}
 	
 	public void loadBoardState(String boardState) {
@@ -458,29 +458,9 @@ public class GameEngine {
 		if(history == null || history.length() == 0)
 			return;
 		
-		String[] actionStrings = history.split(" ");
+		ArrayList<GameAction> actions = actionList.getHistoryFromString(history);
 		
-		if(actionStrings.length == 0 || actionStrings == null)
-			return;
-		
-		for(String actionString: actionStrings){
-			GameAction action;
-			
-			switch(actionString.charAt(0)){
-			case 'D':
-				action =  DoneAction.fromString(actionString);
-				break;
-			case 'S':
-				action =  ShiftMove.fromString(actionString);
-				break;
-			case 'P':
-				action =  PlaceMove.fromString(actionString);
-				break;
-			default:
-				action =  RemoveAction.fromString(actionString);
-				break;
-			}
-			
+		for(GameAction action: actions){
 			replayAction(action);
 		}
 	}

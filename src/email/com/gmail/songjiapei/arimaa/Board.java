@@ -1,17 +1,12 @@
 package email.com.gmail.songjiapei.arimaa;
 
-import java.util.ArrayList;
-
 import android.graphics.Point;
-import android.util.Log;
 import email.com.gmail.songjiapei.arimaa.Piece.PieceColour;
 import email.com.gmail.songjiapei.arimaa.Piece.PieceType;
 
 //never accessed by GameView and up, organizes squares and keeps track of positions, works only by grid coordinates bottom left origin
 public class Board {
-	
-	private static final String TAG = "Board";
-	
+		
 	//squares on board
 	Square[][] squares = new Square[8][8];
 
