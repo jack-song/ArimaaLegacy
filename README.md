@@ -1,7 +1,7 @@
 Arimaa
 ======
 
-Currently in development as a learning project; feedback, pointers, and advice greatly appreciated
+*** This version of the code is no longer in development; see https://github.com/jack-song/Arimaa
 
 [arimaa]: http://arimaa.com/arimaa/
 [nathan]: http://thenoviceoof.com/blog/projects/arimaa-icon-set/
